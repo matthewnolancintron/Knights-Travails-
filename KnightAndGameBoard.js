@@ -16,7 +16,9 @@ function KnightFactory(){
 }
 
 
-let GameBoardObject = GameBoardFactory();
-let KnightObject = KnightFactory();
-console.log(KnightObject)
-console.log(GameBoardObject.gameBoard);
+// let GameBoardObject = GameBoardFactory();
+// let KnightObject = KnightFactory();
+// console.log(KnightObject)
+// console.log(GameBoardObject.gameBoard);
+
+export {GameBoardFactory,KnightFactory}
