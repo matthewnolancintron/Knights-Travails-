@@ -14,6 +14,9 @@ import * as GameBoardAndKnightFactory from "./KnightAndGameBoard.js";
     knightMoves([3,3],[0,0]) == [[3,3],[1,2],[0,0]]
  */
 function knightMoves(start, end) {
+  // keeps track of moves that have already been genearated
+  let listOfMovesThatHaveAListOfPossibleMoves = [];
+
   //stores possible moves that can be made from starting coord
   let possibleMovesFromStartToEnd = [start];
 
@@ -22,297 +25,33 @@ function knightMoves(start, end) {
     possibleMovesFromAStartingCoordinate(possibleMovesFromStartToEnd[0])
   );
 
-  //todo:
-  let indexOfShortestPath;
+  /**
+   * since the starting move now has a list of possible moves
+   * it will be added to listOfMovesThatHaveAListOfPossibleMoves
+   */
+  listOfMovesThatHaveAListOfPossibleMoves.push(start);
 
   /**
    * checks and generates a list of possible moves
    * and returns a list of possible moves for each of
    * those moves if
-   * the end move wasn't in the list of move generated
-   * 
-   * only generate moves if check fails 
-   * 
-   * could also return the index of the 
+   * the end move wasn't in the list of moves generated
+   *
+   * only generate moves if check fails
+   *
+   * could also return the index of the
    * move or moves that match the end
-   * 
+   *
    */
-  function checkAndGenerateUntilEnd(
-    startingCoordinate,
-    endingCoordinate,
-    list
-  ) {
+  let movesStartToEnd = checkAndGenerateUntilEnd(
+    start,
+    end,
+    possibleMovesFromStartToEnd,
+    listOfMovesThatHaveAListOfPossibleMoves
+  );
 
+  let shortestPath = findShortestPathToTheEnd(movesStartToEnd, end);
 
-    if (!isEndMoveInListOfPossibleMoves(list, end)) {
-      //
-      /**
-       * if
-       *  after checking for end move and it is not present
-       *  anywhere in possible moves
-       * then
-       *  for each move in possible moves
-       *  check that moves child or it's list of possible moves
-       *  from its self for the end move
-       */
-      //list.forEach(x=>someFunc(x))
-    } else {
-      //end move was in the that list of possible moves
-      //use that path as output for knightMoves after
-      //formatting it
-    }
-
-  }
-
-  /**
-   * generate list of possible moves from start to end
-   * and if end isn't in that list then generate the
-   * list of moves for each move in that list until
-   * end move is reached
-   *
-   * generate list
-   * check list for end
-   *  if not found repeat
-   *  else stop move to next step
-   *
-   * rather than generate all possible paths from start to end
-   * and for each of those paths and so on without checking for
-   * end in between I could be wasting computations when end could
-   * have already been reached but instead if I had separated
-   * those steps generate all then check all
-   *
-   * instead genearte then check and repeat only if needed
-   * as to not waste time computing extra uneccesarry steps
-   */
-
-  //checking for end move in the
-  //list of possible moves from start
-
-  /**
-   * if any of the possible move at this step
-   * are the end move then move at that index
-   * is the shortest path to the end
-   */
-
-  /**
-   * check for end move with a
-   * "move" order or level order traversal recursively
-   *
-   * create function that recurivly checks
-   * each move in possible moves to see if end move is present
-   *
-   * base case is when end move is present in that level
-   *
-   * recursive case is to then check the next level
-   * of moves to see if end move is present
-   */
-
-  /**
-   * finding all possible moves from a starting
-   * point to the end point and doing so for each
-   * path that is found.
-   *
-   * then check each possible move in the possible moves
-   * array if none of the elements are the end move
-   * or don't contain the end move as child then
-   * check each possible move from the moves currently
-   * in possible moves and check again until an end move
-   * is found.
-   *
-   * what if end move is found but the other moves
-   * don't have a move equal to the end move yet
-   * but could if an additional calculation was run.
-   *
-   * I don't think it would matter in this case
-   * since one of nodes got to the end move sooner
-   * it's a shorter path possibly the shortest path
-   * if no other element also contains the end path
-   * if two elements share the end move at the same
-   * step of looking for possible moves then they are
-   * the paths are the same length in terms of the number
-   * of moves to reach the end.
-   */
-
-  /**
-   * "For this project,
-   *  you’ll need to use a data structure that’s similar
-   *  (but not identical) to a binary tree."
-   * 
-   * "Treat all possible moves the knight could
-   *  make as children in a tree"
-   * ---from odin project
-   * 
-   * if each possible move is a child in a tree then
-   * what should the root be?
-   * should the starting move be the root and all
-   * possible moves be the children nodes?
-   * or should each possible move be a tree
-   * of it's own just a path to the end.
-   * 
-   * 
-   * figure out a data structure suitable for storing
-   * possible moves such that they are children in a tree
-   * 
-   * Treat all possible moves the knight
-   * could make as children in a tree.
-   * 
-   * //edge list
-   * possibleMoves is an array of arrays
-   * it is also an array of edges 
-   * which is called an edge list
-   * to search it will use linear search to find a particular
-   * edge or coord in this context
-   *
-   *  
-   * project ask for possible moves to be store in a data
-   * structure similar to a tree.
-   * Q:would an edge list be a suitable data structure?
-   * A:I'm not sure maybe?
-   * It's what I have now so it works in that sense...
-   * Q:does it sore possible moves or edges suchs that
-   * they are children in a tree?
-   * A:I don't think it does. does it?
-   * 
-   * //adjacency list
-   * For each vertext i store an array of vertices adjacent to it.
-   * an array of |V| adjacency lists one per vertex
-   * 
-   * it's an array of arrays like an edge list expect it stores
-   * list of adjacent verticies instead of a list of edges
-   * 
-   * I don't think adjaceny list would be a good fit
-   * edge list seems like a better fit from what I know right
-   * now.
-   * 
-   * right now each possible move is an array with two elements
-   * representing an x and y coordinate 
-   * that two element array gets stored into an array
-   * this array that holds the coordiantes is 
-   * the possible moves list
-   * each element could be a root 
-   * each element is the start of a path towards the
-   * desired end coordiante
-   * 
-   * to change [x,y] into a tree like structure
-   * I could add a third and fourth element l and r
-   * this could be the tree struct [[x,y],l,r]
-   * first element is the coordinate [x,y]
-   * second element is the left child node
-   * third element is the right child node
-   * 
-   * if a node has no children then 
-   * the third element the left child node
-   * will just hold the value null
-   * same is true for the right child node.
-   * 
-   * example of leaf node
-   * [[x,y],l=null,r=null]
-   * 
-   * example of a non leaf node:
-   * [[x,y],[[x,y],l,r],[[x,y],l,r]];
-   * 
-   * I don't think left or right has significant meaning
-   * like in a binary tree in this context
-   * So instead of left and right child nodes
-   * there are just nodes
-   * 
-   * redo: 
-   * a node is a 2 element array -> [1,2]
-   * first element is a coordiante and a possible move
-   * --> [[x,y], ?]
-   * second element is a child node if present else
-   * it's node in the case of a leaf node 
-   * [[x,y],childNode=null] or [[x,y],[[x,y],childNode=null]]
-   * 
-   * redo the redo:
-   * after thinking about finding end move in possible moves
-   * and how that leads to finding the shortest move
-   * 
-   * I realized that child node or a node in general is
-   * not [[x,y],childNode] with Child Node just being
-   * another coordiante with it's own child node or not
-   * child node is a list of all possible moves that can
-   * be made from it's parent node
-   * the possible moves list its self is a node 
-   * example:
-   *  [[[x,y],listOfPossibleMoveFromParent]]
-   * which might look like this:
-   * 
-   * //list of possible moves from start
-   * [
-   *  // child node 1: an array with two elements
-   *     first element is the first possible move from start
-   *     second element is a list of possible moves from
-   *     the first possible move from start.
-   *  [
-   *    //first possible move
-   *    [x,y],
-   *     //list of possible moves from first possible move
-   *     [
-   *      //first possible move from first possible move
-   *      [[x,y],],
-   *      //second possible move from second possible move
-   *      [[x,y],],
-   *      //third possible move from first possible move
-   *      [[x,y],],
-   *    ]
-   *  ],
-   * 
-   *  // same as child node 1 expect it's for child node 2
-   *  [
-   *    //second possible move
-   *    [x,y],  
-   *    //list of possible moves from second possible move
-   *    [
-   *      //first possible move from second possible move
-   *      [[x,y],],
-   *      //second possible move from second possible move
-   *      [[x,y],],
-   *    ]
-   *  ],
-   * ]
-   * 
-   * should start move be in list of possible moves
-   * instead of 
-   * [[[x,y],list], [[x,y],list]]
-   * would be this:
-   * //start  //a list of possible moves from start
-   * [ [x,y], [[[x,y],list], [[x,y],list]]]
-   * 
-   * //vertical visualization
-   * [
-   *  //start
-   *  [x,y],
-   * 
-   *  //list of possible moves from start
-   *  [
-   *    //first possible move from start
-   *    [
-   *      [x,y],
-   *      list or null
-   *    ],
-   * 
-   *    //second possible move from start
-   *    [
-   *     [x,y],
-   *     list or null
-   *    ]
-   *  ]
-   
-   * ]
-   * 
-   */
-
-  /**
-   * once the list of possible moves part is worked out
-   * figure out how to represent a list of moves
-   * or cooridnaites [[a,b],[c,d]] as children in a tree
-   * I assume nodes maybe a linked list?
-   */
-  /**
-   * Decide which search algorithm is best to use for this case.
-   * Hint: one of them could be a potentially infinite series.
-   */
   /**
    * Use the chosen search algorithm to
    * find the shortest path between the starting square
@@ -443,66 +182,398 @@ function possibleMovesFromAStartingCoordinate(
    */
 
   //adding move A: 2 to the left and up 1, to possibleMoves
-  possibleMoves.push(
-    startingCoordinate.map((e, i) => (i == 0 ? e - 2 : e + 1)).concat(null)
-  );
+  possibleMoves.push([
+    startingCoordinate.map((e, i) => (i == 0 ? e - 2 : e + 1)),
+  ]);
 
   //adding move B: 2 to the left and down 1, to possibleMoves
-  possibleMoves.push(
-    startingCoordinate.map((e, i) => (i == 0 ? e - 2 : e - 1)).concat(null)
-  );
+  possibleMoves.push([
+    startingCoordinate.map((e, i) => (i == 0 ? e - 2 : e - 1)),
+  ]);
 
   //adding move C: 2 to the right and up 1, to possibleMoves
-  possibleMoves.push(
-    startingCoordinate.map((e, i) => (i == 0 ? e + 2 : e + 1)).concat(null)
-  );
+  possibleMoves.push([
+    startingCoordinate.map((e, i) => (i == 0 ? e + 2 : e + 1)),
+  ]);
 
   //adding move D: 2 to the right and down 1, to possibleMoves
-  possibleMoves.push(
-    startingCoordinate.map((e, i) => (i == 0 ? e + 2 : e - 1)).concat(null)
-  );
+  possibleMoves.push([
+    startingCoordinate.map((e, i) => (i == 0 ? e + 2 : e - 1)),
+  ]);
 
   //adding move E: 2 up and 1 to the left, to possibleMoves
-  possibleMoves.push(
-    startingCoordinate.map((e, i) => (i == 0 ? e - 1 : e + 2)).concat(null)
-  );
+  possibleMoves.push([
+    startingCoordinate.map((e, i) => (i == 0 ? e - 1 : e + 2)),
+  ]);
 
   //adding move F: 2 up and 1 to the right, to possibleMoves
-  possibleMoves.push(
-    startingCoordinate.map((e, i) => (i == 0 ? e + 1 : e + 2)).concat(null)
-  );
+  possibleMoves.push([
+    startingCoordinate.map((e, i) => (i == 0 ? e + 1 : e + 2)),
+  ]);
 
   //adding move G: 2 down and 1 to the left, to possibleMoves
-  possibleMoves.push(
-    startingCoordinate.map((e, i) => (i == 0 ? e - 1 : e - 2)).concat(null)
-  );
+  possibleMoves.push([
+    startingCoordinate.map((e, i) => (i == 0 ? e - 1 : e - 2)),
+  ]);
 
   //adding move H: 2 down and 1 to the right, to possibleMoves
-  possibleMoves.push(
-    startingCoordinate.map((e, i) => (i == 0 ? e + 1 : e - 2)).concat(null)
-  );
+  possibleMoves.push([
+    startingCoordinate.map((e, i) => (i == 0 ? e + 1 : e - 2)),
+  ]);
+
+  // console.log(possibleMoves);
 
   //filter possible moves down to only moves that are on the board
   possibleMoves = possibleMoves.filter(
-    (coord) => coord[0] > 0 && coord[0] < 8 && coord[1] > 0 && coord[1] < 8
+    (coord) =>
+      coord[0][0] > 0 && coord[0][0] < 8 && coord[0][1] > 0 && coord[0][1] < 8
   );
 
+  // console.log(possibleMoves)
   return possibleMoves;
 }
 
 //checks for end move in a list of possible moves
 //and returns true if it is and false otherwise.
+//
 function isEndMoveInListOfPossibleMoves(list, end) {
-  return list.some((node, index) => {
+  // console.log(list[1],'list');
+  return list[1].some((node, index) => {
+    // console.log(node,'node')
     let xCoordOfNode = node[0][0];
+    // console.log(xCoordOfNode,'xCoordOfNode');
     let ycoordOfNode = node[0][1];
-    let childNodeAListOfPossibleMoves = node[1];
     //todo: don't forget to store index of node that is
     //equal to end move to indexOfShortestPath
-
     //xCoordOfEnd             //yCoordOfEnd
     return xCoordOfNode == end[0] && ycoordOfNode == end[1];
   });
+}
+
+function checkAndGenerateUntilEnd(
+  startingCoordinate,
+  endingCoordinate,
+  list,
+  listOfMovesThatHaveAListOfPossibleMoves
+) {
+  //
+  /**
+   * I think this is a breadth first aproach of generating a path
+   * that reaches the end move.
+   *
+   * I had an issues with moves generating paths
+   * with moves that contained them selves
+   * creating an infinite series.
+   *
+   * also the looping back onto
+   * iself, would cause an infinte loop
+   * and exceed the call stack.
+   */
+
+  //details about the infinite series issuse
+  /**
+   * issue:
+   * check and genereate will create an infinite series
+   * because some moves genereate possible moves
+   * that contain a move that genearted itself
+   * causing an infinite loop to occur.
+   *
+   * possible solution:js set data structure
+   * if a move is to generate a possible
+   * move that is known to generaete itself
+   * or if a move is to genreate a move that's
+   * already been generated or visited
+   * then that move that has already been generated
+   * and has already genereated a list of possible moves
+   * should not generate a list of possible moves
+   * as it is not a path to the end it is a path
+   * that loops back on itself (or to the start?)
+   *
+   * create an array (stack or que?)
+   * that holds moves that have been already
+   * generaeted or visited ()
+   * when a move generates a list of possible moves
+   * each move it generates will get passed into
+   * that array
+   * when each move in a move's possible moves array
+   * is about to generate it's own list of possible moves
+   * first check if that move has already been
+   * visisted or generated and if it has then
+   * don't genearte a list of possible moves for it
+   *
+   * the move should go to generated moves if the move
+   * has been generated and if it has a list of generated moves
+   *
+   * the start [[3,3]]
+   * doesn't have possible move generated yet
+   * then some code adds the generated moves to it
+   * the move is now [[3,3],[[x,y][x,y][x,y]]]
+   * now the move [3,3] can be moved to the generatedMoves list
+   *
+   * generatedmoves isn't a list that keeps track of moves
+   * generated but instead keeps track of the moves
+   * that have a list of possible moves.
+   * listOfMovesThatHaveAListOfPossibleMoves is a more accurate name
+   * and it will be updated to that.
+   */
+
+  /**
+   * if
+   *  after checking for end move and it is not present
+   *  anywhere in possible moves
+   * then
+   *  for each move in possible moves
+   *  check for the end move in that move's child which is a
+   *  list of possible moves that can be made from it
+   */
+  if (!isEndMoveInListOfPossibleMoves(list, endingCoordinate)) {
+    /**
+     * check if a move in possible moves has a list of possible
+     * moves
+     */
+    list[1].forEach((move, index, array) => {
+      /*
+       * if a move doesn't have a second element
+       * then it doesn't have a list of possible moves
+       */
+      if (move[1] === undefined) {
+        /**
+         * using a conditional and an array that
+         * tracks moves that have already generated
+         * a path of possible moves before generating
+         * a path of possible moves for a move
+         * is my solution for avoiding exceeding the
+         * call stack
+         *
+         * I think going about this in a depth first
+         * kind of aproach might avoid that issuse
+         * all together but might have it's own
+         * issues.
+         *
+         * todo: explore depth first way of checking
+         * and generating to the end move.
+         * explore pro and cons against the current
+         * level order version. (I think the current version
+         * is a level order version I'm not certain as of now.)
+         */
+
+        /**
+         only generate list of possible moves
+         if the move hasn't already had a
+         list of possible moves created for it
+         */
+        if (
+          !listOfMovesThatHaveAListOfPossibleMoves.some(
+            (alreadygeneratedMove) =>
+              alreadygeneratedMove[0] === move[0][0] &&
+              alreadygeneratedMove[1] === move[0][1]
+          )
+        ) {
+          //create list of possible moves for the current move
+          move.push(
+            //start
+            possibleMovesFromAStartingCoordinate(move[0])
+          );
+
+          /**
+           * move now has a list of possible moves
+           * it will be added to listOfMovesThatHaveAListOfPossibleMoves
+           */
+          listOfMovesThatHaveAListOfPossibleMoves.push(move[0]);
+        }
+
+        /*
+         * if the move has a list of possible moves
+         */
+        if (!(move[1] === undefined)) {
+          // console.log(move[0], "move");
+          // console.log(move[1],'list of possible moves');
+
+          //start, end, possible move from start to end
+          return checkAndGenerateUntilEnd(
+            move[0],
+            endingCoordinate,
+            move,
+            listOfMovesThatHaveAListOfPossibleMoves
+          );
+        }
+        //else ignore doing so for that move
+      }
+    });
+  } else {
+    //end move was in list's move's(list[0]'s)
+    //list of possible moves list(list[1])
+    /**
+     * list [0] is the move
+     * list [1] is that moves list of possible moves that can
+     * be made from list[0] (move)
+     **/
+    /**
+      should I return the first move that has a list
+      of possible moves that leads to the end or instead
+      add the moves as well as other moves that meet those 
+      condition to a list to be searched through later?
+
+      if the first move that meets the condtions of containing
+      a list of possible moves that contains the end move
+      as a possible move also the shortest path to that move?
+      
+      does the current "check and generate to the end" function
+      genearte paths to the end recursively(yes) and also
+      finds and returns the shortest path
+      to the end?(
+        Question:
+        if the first move that meets the condtions of containing
+        a list of possible moves that contains the end move
+        as a possible move is it also the shortest path to that
+        move?
+
+        My Thoughts on that question:
+        I would have to find a way to
+        test and verify that
+        todo: find a way to test the question
+        above.
+        todo: find a way to verify the test
+
+        if:
+          after testing the first is also the shortest
+          and verifying the test
+        then:
+          yes
+
+        else if: it sometimes does
+        then:
+          maybe there is a pattern
+          and something to be learned
+
+        else:
+          it does not after test and verification
+        then:
+          no, based on the test and verification.
+      );
+      as for both(depends on the question above)
+      
+      
+      rather than just returning the list of moves
+      start to end
+      could add the moves that contained the end move to a
+      a data strucure that store paths that leads to an end.
+
+      if using this function as a help function would need
+      to make the data structure for it.
+
+      I could make that a global variable or
+      make it local to the knight moves function
+      and pass it as an argument to check and generate.
+      then check and generate would require an additional
+      parameter could call that paramter 
+      listToTrackMovesThatAlreadyGeneratedMoves
+      
+      that would work well if I could back track 
+      from child node to parent but with the 
+      current way the moves are implemented
+      I cannot.
+      I would need to update the data structure
+      that I use for the moves to behave similar
+      to a link list where the nodes have a
+      previous and next move prop
+      then I could look through the moves that make 
+      it to the end and count how many moves it took
+      each move to make it to the end and select 
+      the moves with lowest count  
+      
+      For now I will just return the list that was passed 
+      in backout in a mutated state.
+
+      I might come back later to try the other possible 
+      solution if I feel like.
+      */
+  }
+  return list;
+}
+
+/*
+  Decide which search algorithm is best to use for this case.
+  Hint: one of them could be a potentially infinite series.
+
+  I'll use a depth first type search algorithm 
+
+  start from start move's first possible move
+  and check if that's the end move
+  if not
+  then look through that moves possible moves
+  and repeat, if after checking first possible
+  move from start and end isn't found anywhere 
+  down the hierachy, then check the second move doing the same
+  as was done for first move repeat that process
+
+  until a possible move from start that contains end
+  is found along the way count how many moves it took
+  that path to reach the end 
+  all paths that reach the end will have the index
+  from start's list of possible moves and the number
+  moves it took stored as an object with props
+  indexOfPossibleMoveFromStartToEnd and numberOfMovesItTook
+  each object will be passed to an array contain all of the
+  paths that reach the end
+
+  then the array will be filtered to contain the object with
+  the lowest numberOfMovesItTook value
+  
+  the function will then return that objects index
+  or should it just return the object, just return the object
+*/
+
+function depthSearch(list, end, possiblePathToEnd, listOfPathsToEnd) {
+  let endX = end[0];
+  let endY = end[1];
+
+  if (list[1] != undefined) {
+    for (let i = 0; i < list[1].length; i++) {
+      let moveInQuestion = list[1][i];
+      let moveInQuestionX = list[1][i][0][0];
+      let moveInQuestionY = list[1][i][0][1];
+      if (moveInQuestionX == endX && moveInQuestionY == endY) {
+        //add ending move as last move in possible chain to end
+        possiblePathToEnd.push(moveInQuestion[0]);
+
+        //add possibleChainToEnd to listOfChains to end
+        listOfPathsToEnd.push(possiblePathToEnd);
+
+        //add a signal to clear the array to the end of it
+        possiblePathToEnd.push("needs clear");
+      } else {
+        if (moveInQuestion[1] != undefined) {
+          if (
+            possiblePathToEnd[possiblePathToEnd.length - 1] == "needs clear"
+          ) {
+            possiblePathToEnd = [];
+          }
+          possiblePathToEnd.push(moveInQuestion[0]);
+          depthSearch(
+            list[1][i],
+            end,
+            possiblePathToEnd,
+            listOfPathsToEnd
+          );
+        }
+      }
+    }
+  }
+  return listOfPathsToEnd
+}
+
+function findShortestPathToTheEnd(
+  list,
+  end,
+  possiblePathToEnd = [list[0]],
+  listOfPathsToEnd = []
+) {
+  let theListOfPathsToTheEndMove = depthSearch(list, end,possiblePathToEnd,listOfPathsToEnd);
+  console.log(theListOfPathsToTheEndMove,'x');
+  //todo filter out the needs clear from the sub lists in the above list
+  //todo then filter it to contain the list with the least amount of elements
+  //todo then head back to the main funciton to work on formatting the output
 }
 
 //prints the game board formated to look like a chessboard
@@ -567,8 +638,9 @@ printGameBoard(gameBoard);
 
 let knight = GameBoardAndKnightFactory.KnightFactory();
 // console.log(knight, "knight");
+//the knight
 
-let shortestPathToOneTwo = knightMoves([0, 0], [1, 2]); //[[0,0],[1,2]]
+// let shortestPathToOneTwo = knightMoves([0, 0], [1, 2]); //[[0,0],[1,2]]
 // console.log(shortestPathToOneTwo);
 
 let shortestPathToFourThree = knightMoves([3, 3], [4, 3]);
