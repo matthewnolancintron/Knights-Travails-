@@ -64,10 +64,11 @@ function knightMoves(start, end) {
     [2,4]
     [4,3]
   //  */
-  // console.log(shortestPath.join(','));
-  console.log(`KnightMoves([${start}],[${end}])`);
-  console.log('=>',`you made it in ${shortestPath.length-1} moves!, Here's your path:`);
-  shortestPath.forEach(move=>console.log(move));
+  console.log(movesStartToEnd);
+  console.log(shortestPath);
+  // console.log(`KnightMoves([${start}],[${end}])`);
+  // console.log('=>',`you made it in ${shortestPath.length-1} moves!, Here's your path:`);
+  // shortestPath.forEach(move=>console.log(move));
 
 }
 
@@ -755,5 +756,11 @@ let knight = GameBoardAndKnightFactory.KnightFactory();
 // let shortestPathToOneTwo = knightMoves([0, 0], [1, 2]); //[[0,0],[1,2]]
 // console.log(shortestPathToOneTwo);
 
-let shortestPathToFourThree = knightMoves([3, 3], [4, 3]);
+// knightMoves([0, 0], [1, 2]);
+// knightMoves([3, 3], [4, 3]);
+knightMoves([4, 3], [3, 3]);
+
+// knightMoves([0, 0], [3, 3]);
+// knightMoves([3, 3], [0, 0]);
+// knightMoves([3, 3], [4, 3]);
 // console.log(shortestPathToFourThree);
