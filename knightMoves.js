@@ -50,7 +50,7 @@ function knightMoves(start, end) {
     listOfMovesThatHaveAListOfPossibleMoves
   );
 
-  let shortestPath = findShortestPathToTheEnd(movesStartToEnd, end);
+    let shortestPath = findShortestPathToTheEnd(movesStartToEnd, end);
 
   /**
    * Use the chosen search algorithm to
@@ -63,7 +63,12 @@ function knightMoves(start, end) {
     [4,5]
     [2,4]
     [4,3]
-   */
+  //  */
+  // console.log(shortestPath.join(','));
+  console.log(`KnightMoves([${start}],[${end}])`);
+  console.log('=>',`you made it in ${shortestPath.length-1} moves!, Here's your path:`);
+  shortestPath.forEach(move=>console.log(move));
+
 }
 
 //helper functions for knightMoves
@@ -524,16 +529,34 @@ function checkAndGenerateUntilEnd(
   or should it just return the object, just return the object
 */
 
-function depthSearch(list, end, possiblePathToEnd, listOfPathsToEnd) {
+//depth first traversal
+function depthSearch(
+  list,
+  end,
+  possiblePathToEnd,
+  listOfPathsToEnd,
+  stepsFromStartToEnd
+) {
+  stepsFromStartToEnd++;
   let endX = end[0];
   let endY = end[1];
 
+ 
+
   if (list[1] != undefined) {
     for (let i = 0; i < list[1].length; i++) {
+      if (
+        possiblePathToEnd[possiblePathToEnd.length - 1] == "needs clear"
+      ) {
+        //trying out reseting steps when end is reached
+        possiblePathToEnd = possiblePathToEnd.slice(0, stepsFromStartToEnd);
+        // stepsFromStartToEnd = 0;
+      }
       let moveInQuestion = list[1][i];
       let moveInQuestionX = list[1][i][0][0];
       let moveInQuestionY = list[1][i][0][1];
       if (moveInQuestionX == endX && moveInQuestionY == endY) {
+        
         //add ending move as last move in possible chain to end
         possiblePathToEnd.push(moveInQuestion[0]);
 
@@ -541,39 +564,128 @@ function depthSearch(list, end, possiblePathToEnd, listOfPathsToEnd) {
         listOfPathsToEnd.push(possiblePathToEnd);
 
         //add a signal to clear the array to the end of it
+        /**
+         * simply clearing the array isn't good enough
+         * I need to preserve the full path from start
+         * to end so when I reach the end rather than simply
+         * clearing the path I need to "go back" in the path
+         * the number of steps I took to reach the end
+         * every time the function does a recursive call
+         * I count that as a step or another move to the end
+         * move once an end is reached I will add the
+         * steps to the end of the path before the "clear signal"
+         * will update needs clear to something else later maybe
+         * the stepsFromStartToEnd value will be used to slice
+         * the possiblePathToEnd back that many elements or steps
+         * preserving the full path from start.
+         * also stepsFromStartToEnd will also be set back to zero
+         * I think it needs to be reset not sure just yet.
+         */
         possiblePathToEnd.push("needs clear");
       } else {
         if (moveInQuestion[1] != undefined) {
-          if (
-            possiblePathToEnd[possiblePathToEnd.length - 1] == "needs clear"
-          ) {
-            possiblePathToEnd = [];
+            if (
+              possiblePathToEnd[possiblePathToEnd.length - 1] == "needs clear"
+            ) {
+              // possiblePathToEnd = possiblePathToEnd.slice(0,);
+              // console.log(stepsFromStartToEnd, "steps?");
+              //trying out reseting steps when end is reached
+              possiblePathToEnd = possiblePathToEnd.slice(0, stepsFromStartToEnd);
+              // stepsFromStartToEnd = 0;
+            }
+            possiblePathToEnd.push(moveInQuestion[0]);
+  
+            depthSearch(
+              list[1][i],
+              end,
+              possiblePathToEnd,
+              listOfPathsToEnd,
+              stepsFromStartToEnd
+            );
+          
+        } else {
+          if(moveInQuestion[1] == undefined){
+            possiblePathToEnd.push("needs clear");
           }
-          possiblePathToEnd.push(moveInQuestion[0]);
-          depthSearch(
-            list[1][i],
-            end,
-            possiblePathToEnd,
-            listOfPathsToEnd
-          );
         }
       }
     }
   }
-  return listOfPathsToEnd
+  return listOfPathsToEnd;
 }
 
 function findShortestPathToTheEnd(
   list,
   end,
   possiblePathToEnd = [list[0]],
-  listOfPathsToEnd = []
+  listOfPathsToEnd = [],
+  stepsFromStartToEnd = 0
 ) {
-  let theListOfPathsToTheEndMove = depthSearch(list, end,possiblePathToEnd,listOfPathsToEnd);
-  console.log(theListOfPathsToTheEndMove,'x');
-  //todo filter out the needs clear from the sub lists in the above list
-  //todo then filter it to contain the list with the least amount of elements
+  // console.log(list[1][0][1], list[1][0][0],'\n' ); // 1,4's list
+  // console.log(list[1][0][1][0][1], list[1][0][1][0][0],'\n');
+  // console.log(list[1][0][1][2][1],list[1][0][1][2][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1],list[1][0][1][2][1][0][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1],list[1][0][1][2][1][0][1][1][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1],list[1][0][1][2][1][0][1][1][1][1][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][1][1],list[1][0][1][2][1][0][1][1][1][1][1][1][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][3][1],list[1][0][1][2][1][0][1][1][1][1][1][3][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1],list[1][0][1][2][1][0][1][1][1][1][1][4][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][0][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][0][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1][1][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1][1][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1][1][1][0][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1][1][1][0][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1][1][1][0][1][0][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1][1][1][0][1][0][0],'\n');
+  // console.log(list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1][1][1][0][1][2][1],list[1][0][1][2][1][0][1][1][1][1][1][4][1][1][1][2][1][1][1][0][1][0][1][1][1][0][1][2][0],'\n');
+
+  //todo continue loging out the nested arrays in linear order until there are no more nested arrays
+  //todo go back to depth search and continue to figure out how to get it to save the complete path
+  //from a start to end for each path and use scratch pad .txt as a guide
+  //thought on this process so far:
+  //the more neseted an array is the more recursive steps are required to reach the end move
+  //so the sooner an end move is reached the shorter the path to it
+  
+  //the less nested the array the shorter the path
+  //maybe there is a way to track nesting
+  //use that as a way for finding the shortest path.
+
+  //I'm mostly sure that the first end path that is found the shortest
+  //unless all of the moves in a move's list of possible moves lead to end and any path from those moves that come after the first path and happen to be a shorter path than it
+  //in that case it could be nth 
+
+  let theListOfPathsToTheEndMove = depthSearch(
+    list,
+    end,
+    possiblePathToEnd,
+    listOfPathsToEnd,
+    stepsFromStartToEnd
+  );
+
+  // console.log(theListOfPathsToTheEndMove);
+
   //todo then head back to the main funciton to work on formatting the output
+  theListOfPathsToTheEndMove.forEach((list) => {
+    list.pop();
+  });
+
+  //sort the sub lists by length from least to greatest
+  theListOfPathsToTheEndMove.sort((firstElement, secondElement) => {
+    if (firstElement.length < secondElement.length) {
+      return -1;
+    } else if (firstElement.length > secondElement.length) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  // theListOfPathsToTheEndMove.forEach(x=>console.log(x.length));
+  // console.log(theListOfPathsToTheEndMove[0]);
+
+  return theListOfPathsToTheEndMove[0]
 }
 
 //prints the game board formated to look like a chessboard
